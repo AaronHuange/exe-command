@@ -101,9 +101,6 @@ public class WsClient extends WebSocketClient {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-//                    if (wsClient.getReadyState().equals(WebSocket.READYSTATE.OPEN)) {
-//                        send("重新连接");
-//                    }
                 } catch (IllegalStateException e) {
                     try {
                         Thread.sleep(5000);
