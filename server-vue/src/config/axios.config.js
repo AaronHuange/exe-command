@@ -12,7 +12,7 @@ import {
 class AxiosConfig {
     // deviceId = "";
     token = "";
-    httpRequestPrefix = process.env.VUE_APP_REQUEST_ROOTPATH;
+    // httpRequestPrefix = process.env.VUE_APP_REQUEST_ROOTPATH;
     uuid = "";
 
     createRequestNo() {
@@ -29,7 +29,7 @@ class AxiosConfig {
     }
 
     addHttpRequestPrefix() {
-        axios.defaults.baseURL = this.httpRequestPrefix;
+        // axios.defaults.baseURL = this.httpRequestPrefix;
     }
 
     addCommonDataToRequest() {

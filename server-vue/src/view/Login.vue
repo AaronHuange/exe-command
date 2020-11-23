@@ -103,15 +103,22 @@
                             LoginServer.login({
                                 "username": this.loginName,
                                 "password": this.value
-                            }).then(() => {
-
+                            }).then((res, success) => {
+                                if (success) {
+                                    this.$router.replace({path:"/home"});
+                                } else {
+                                    this.reset()
+                                }
                             }).catch(() => {
-
+                                this.reset()
                             })
 
                         }
                     }
                 }
+            },
+            reset() {
+
             }
         },
         created() {

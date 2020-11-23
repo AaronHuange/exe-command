@@ -34,7 +34,12 @@ public class BaseResponse {
 
     static {
         returnCode.put("9991", "没有权限访问");
+        returnCode.put("9992", "账户过期");
+        returnCode.put("9993", "用户名或者密码输入错误");
         returnCode.put("9994", "接口不存在");
+        returnCode.put("9995", "账户被禁用");
+        returnCode.put("9996", "密码过期");
+        returnCode.put("9997", "账户被锁定");
     }
 
 }
