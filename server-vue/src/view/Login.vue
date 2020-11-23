@@ -13,6 +13,8 @@
 </template>
 
 <script>
+    import LoginServer from "../api/login.server"
+
     export default {
         name: "Login",
         data() {
@@ -92,12 +94,20 @@
                             return;
                         }
                         if (this.tip === this.nameTip) {
-                            this.$refs.input.type="password";
+                            this.$refs.input.type = "password";
                             this.tip = this.passwordTip;
                             this.loginName = this.value;
                             this.value = "";
                         } else {
                             //提交请求
+                            LoginServer.login({
+                                "username": this.loginName,
+                                "password": this.value
+                            }).then(() => {
+
+                            }).catch(() => {
+
+                            })
 
                         }
                     }

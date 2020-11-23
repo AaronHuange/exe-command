@@ -1,4 +1,4 @@
-package com.example.mp.server.controller;
+package com.server.mp.server.wsconnect;
 
 import org.springframework.stereotype.Component;
 

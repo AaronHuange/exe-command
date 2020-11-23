@@ -1,4 +1,4 @@
-package com.example.mp.server.config;
+package com.server.mp.server.config;
 
 public class BaseMessage {
 

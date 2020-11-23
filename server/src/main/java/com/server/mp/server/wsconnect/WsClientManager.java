@@ -1,6 +1,6 @@
-package com.example.mp.server.controller;
+package com.server.mp.server.wsconnect;
 
-import com.example.mp.server.config.BaseMessage;
+import com.server.mp.server.config.BaseMessage;
 import com.google.gson.Gson;
 
 import javax.websocket.Session;
