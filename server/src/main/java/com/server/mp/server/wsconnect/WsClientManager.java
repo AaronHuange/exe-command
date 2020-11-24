@@ -1,7 +1,7 @@
 package com.server.mp.server.wsconnect;
 
+import com.google.gson.Gson;
 import com.server.mp.server.config.BaseMessage;
-//import com.google.gson.Gson;
 
 import javax.websocket.Session;
 import java.util.HashMap;
@@ -11,26 +11,39 @@ public class WsClientManager {
     public static Map<String, Session> clientMap = new HashMap<>();
     public static Map<String, Session> adminMap = new HashMap<>();
 
-    public static void onMessage(Session session, String messageStr){
-        System.out.println("onMessage:"+messageStr);
+    public static void onMessage(Session session, String messageStr) {
+        System.out.println("onMessage:" + messageStr);
         if (messageStr != null && !messageStr.trim().equals("")) {
-//            BaseMessage message = new Gson().fromJson(messageStr, BaseMessage.class);
-//            if (message != null) {
-//                switch (message.getType()) {
-//                    case "amdinlogin"://管理员登录
-//                        System.out.println("管理员登录");
-//
-//                        break;
-//                    case "clientlogin"://客户端登录
-//
-//                        break;
-//                    case "replae":
-//
-//
-//                        break;
-//                    case "":
-//
-//                }
+            BaseMessage message = new Gson().fromJson(messageStr, BaseMessage.class);
+            if (message != null && message.getType() != null) {
+                switch (message.getType()) {
+                    case "amdinlogin"://管理员登录
+                        System.out.println("管理员登录");
+                        String adminName = message.getClientName();
+                        String password = "";
+                        Map<String, String> map = message.getMsg();
+                        if (map != null && map.containsKey("password")) {
+                            password = map.get("password");
+                        }
+                        //校验正确性
+
+
+                        //验证通过添加到管理员列表
+                        if (!adminMap.containsKey(adminName)) {
+                            adminMap.put(adminName, session);
+                        }
+                        break;
+                    case "clientlogin"://客户端登录
+
+                        break;
+                    case "replae":
+
+
+                        break;
+                    case "command":
+
+
+                }
 
 
 //                String name = message.getClientName();
@@ -41,7 +54,7 @@ public class WsClientManager {
                 //都不是则不理会这条消息
 
 
-//            }
+            }
         }
     }
 

@@ -1,9 +1,11 @@
 package com.server.mp.server.config;
 
+import java.util.Map;
+
 public class BaseMessage {
 
     private String clientName;
-    private String msg;
+    private Map<String,String> msg;
     private String type;
 
     public String getClientName() {
@@ -14,11 +16,11 @@ public class BaseMessage {
         this.clientName = clientName;
     }
 
-    public String getMsg() {
+    public Map<String, String> getMsg() {
         return msg;
     }
 
-    public void setMsg(String msg) {
+    public void setMsg(Map<String, String> msg) {
         this.msg = msg;
     }
 
