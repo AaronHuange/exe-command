@@ -1,7 +1,6 @@
 <template>
     <div class="page-warp">
 
-
     </div>
 </template>
 
@@ -20,13 +19,15 @@
         },
         created() {
             //开始连接websocket服务
-            websocket.connect("ws://", () => {
+            websocket.connect("ws://127.0.0.1:8080/chat", () => {
                 //发送认证管理员消息 当连接上时
-                websocket.send_data(Protocol.toString("paly", {
+                websocket.send_data(Protocol.toString("amdinlogin", {
                     username: this.username,
                     password: this.password
                 }));
             }, () => {
+
+
                 //当收到消息时
             }, () => {
                 //当连接关闭时

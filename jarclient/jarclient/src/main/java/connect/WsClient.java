@@ -40,7 +40,7 @@ public class WsClient extends WebSocketClient {
     }
 
     public static WsClient get() {
-        return get("ws://localhost:8080/chat");
+        return get("ws://192.168.1.51:8080/chat");
 //        return get("ws://123.207.136.134:9010/ajaxchattest");
     }
 

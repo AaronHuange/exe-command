@@ -1,37 +1,39 @@
 package com.server.mp.server.wsconnect;
 
 import com.server.mp.server.config.BaseMessage;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 import javax.websocket.Session;
 import java.util.HashMap;
 import java.util.Map;
 
 public class WsClientManager {
-    public Map<String, Session> clientMap = new HashMap<>();
-    public Map<String, Session> adminMap = new HashMap<>();
+    public static Map<String, Session> clientMap = new HashMap<>();
+    public static Map<String, Session> adminMap = new HashMap<>();
 
-    public static void onMessage(Session session, String messageStr) {
+    public static void onMessage(Session session, String messageStr){
+        System.out.println("onMessage:"+messageStr);
         if (messageStr != null && !messageStr.trim().equals("")) {
-            BaseMessage message = new Gson().fromJson(messageStr, BaseMessage.class);
-            if (message != null) {
-                switch (message.getType()) {
-                    case "amdinlogin"://管理员登录
+//            BaseMessage message = new Gson().fromJson(messageStr, BaseMessage.class);
+//            if (message != null) {
+//                switch (message.getType()) {
+//                    case "amdinlogin"://管理员登录
+//                        System.out.println("管理员登录");
+//
+//                        break;
+//                    case "clientlogin"://客户端登录
+//
+//                        break;
+//                    case "replae":
+//
+//
+//                        break;
+//                    case "":
+//
+//                }
 
-                        break;
-                    case "clientlogin"://客户端登录
 
-                        break;
-                    case "replae":
-
-
-                        break;
-                    case "":
-
-                }
-
-
-                String name = message.getClientName();
+//                String name = message.getClientName();
                 //是否是管理员的名字
 
                 //是否是客户列表的名字
@@ -39,7 +41,7 @@ public class WsClientManager {
                 //都不是则不理会这条消息
 
 
-            }
+//            }
         }
     }
 
@@ -48,7 +50,7 @@ public class WsClientManager {
      *
      * @param msg
      */
-    private void sendToAdmin(String msg) {
+    private static void sendToAdmin(String msg) {
         for (Session s : adminMap.values()) {
             if (s != null && s.isOpen()) {
                 try {
@@ -68,7 +70,7 @@ public class WsClientManager {
      * @param adminName
      * @param msg
      */
-    private void sendToAdminByAdminName(String adminName, String msg) {
+    private static void sendToAdminByAdminName(String adminName, String msg) {
         if (adminMap.containsKey(adminName)) {
             if (adminMap.get(adminName).isOpen()) {
                 try {
@@ -82,7 +84,7 @@ public class WsClientManager {
         }
     }
 
-    private void sendTo(String name, String msg) {
+    private static void sendTo(String name, String msg) {
         if (adminMap.containsKey(name)) {
             if (adminMap.get(name).isOpen()) {
                 try {

@@ -27,18 +27,22 @@ const websocket = {
     },
 
     on_close: function () {
-        if (this.onclose) {
-            if (this.onclose()) {
-                this.close();
-            } else {
-                this.isRecon = true;
-                this.connect(this.onUrl, this.onopen, this.onmessage, this.onclose);
-            }
+        if (this.onclose()) {
+            this.close();
+        } else {
+            //最多尝试3次
+            // this.isRecon = true;
+            // this.connect(this.onUrl, this.onopen, this.onmessage, this.onclose);
         }
     },
 
     on_error: function () {
-        this.close();
+        // if (this.onclose()) {
+        //     this.close();
+        // } else {
+        //     this.isRecon = true;
+        //     this.connect(this.onUrl, this.onopen, this.onmessage, this.onclose);
+        // }
     },
 
     close: function () {
@@ -55,6 +59,7 @@ const websocket = {
         this.onopen = open;
         this.onclose = close;
         this.onmessage = message;
+        const WebSocket =window.WebSocket;
         this.sock = new WebSocket(url);
         this.sock.binaryType = "arraybuffer";
         this.sock.onopen = this.on_open.bind(this);

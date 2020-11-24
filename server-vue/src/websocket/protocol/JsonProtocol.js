@@ -9,7 +9,7 @@ const JsonProtocol = {
     },
     toString(type, obj) {
         AMessage.type = type;
-        AMessage.userId = this._userId;
+        AMessage.clientName = this._userId;
         AMessage.message = obj;
         return JSON.stringify(AMessage);
     },
@@ -18,7 +18,7 @@ const JsonProtocol = {
 
 const AMessage = {
     type: "",
-    userId: "",
+    clientName: "",
     message: {}
 };
 
