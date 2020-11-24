@@ -1,5 +1,22 @@
 <template>
     <div class="page-warp">
+        <div class="content-warp">
+            <div>
+
+            </div>
+
+            <div>
+
+            </div>
+        </div>
+        <div class="list-warp">
+            <div style="font-size: 18px;margin-bottom: 20px;">在线列表：</div>
+            <template v-for="(item,index) in lineList">
+                <div  style="border-top: gray solid 1px" :class="{client:currentID===item.name,}" :key="index+'lineList'">
+                    <div>ID:{{item.name}}</div> <div :class="{client: currentID===item.name}">类型:{{item.clienttype}}</div>
+                </div>
+            </template>
+        </div>
 
     </div>
 </template>
@@ -8,13 +25,65 @@
     import websocket from "../websocket/wsconnect";
 
     const Protocol = require("../websocket/protocol/JsonProtocol"); //TODO 暂时用json
-
     export default {
         name: "Home",
         data() {
             return {
                 username: this.$route.query.username,
                 password: this.$route.query.password,
+                showcommand: false,
+                token: "",
+                currentID: "",
+                lineList: [
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                    {
+                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
+                        clienttype: "android"
+                    },
+                ]
             }
         },
         created() {
@@ -25,10 +94,43 @@
                     username: this.username,
                     password: this.password
                 }));
-            }, () => {
+            }, (msg) => {
+                switch (msg.type) {
+                    case  "amdinlogin":
+                        console.log(msg);
+                        if (msg.msg.tip === "登录成功") {
+                            this.showcommand = true;
+                            this.token = msg.msg.token;
+                            //获取当前在线列表
+                            websocket.send_data({
+                                type: "allclient",
+                                clientName: this.username,
+                                msg: {
+                                    token:this.token
+                                }
+                            });
 
+                        } else {
+                            this.$router.replace("/auth")
+                        }
+                        break;
+                    case "allclient":
+                        this.lineList=[];
+                        this.currentID="";
+                        msg.msg.tip.forEach(item=>{
+                            if (this.currentID===""){
+                                this.currentID=item;
+                            }
 
-                //当收到消息时
+                            this.lineList.push({
+                                name: item,
+                                clienttype: "android"
+                            })
+
+                        });
+                        break;
+
+                }
             }, () => {
                 //当连接关闭时
             });
@@ -41,7 +143,22 @@
     .page-warp {
         background: black;
         width: 100%;
-        height: 100%;
+        height: 100vh;
+        color: gray;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .content-warp {
+        flex: 0.75;
+    }
+
+    .list-warp {
+        flex: 0.25;
+    }
+
+    .client {
+        color: green;
     }
 
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.server.mp.server.config.BaseMessage;
 
 import javax.websocket.Session;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,11 @@ public class WsClientManager {
     public static Map<String, Session> adminMap = new HashMap<>();
 
     public static void onMessage(Session session, String messageStr) {
+        if ("ping".equals(messageStr)) {
+            sendToBySession(session, "pong");
+            //如何移除不在线的
+            return;
+        }
         System.out.println("onMessage:" + messageStr);
         if (messageStr != null && !messageStr.trim().equals("")) {
             BaseMessage message = new Gson().fromJson(messageStr, BaseMessage.class);
@@ -21,26 +27,47 @@ public class WsClientManager {
                         System.out.println("管理员登录");
                         String adminName = message.getClientName();
                         String password = "";
-                        Map<String, String> map = message.getMsg();
+                        Map<String, Object> map = message.getMsg();
                         if (map != null && map.containsKey("password")) {
-                            password = map.get("password");
+                            password = (String) map.get("password");
                         }
-                        //校验正确性
-
-
-                        //验证通过添加到管理员列表
-                        if (!adminMap.containsKey(adminName)) {
-                            adminMap.put(adminName, session);
+                        //校验正确性 FIXME 暂时内存写死
+                        if ("admin".equals(adminName) && "admin".equals(password)) {
+                            if (!adminMap.containsKey(adminName)) {
+                                adminMap.put(adminName, session); //这个应该是单独登录的
+                            } else {
+                                if (session != adminMap.get(adminName)) {
+                                    try {
+                                        adminMap.get(adminName).close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    adminMap.put(adminName, session);
+                                }
+                            }
+                            System.out.println("登录成功");
+                            sendToBySession(session, BaseMessage.replay(message, "登录成功"));
+                            return;
                         }
+                        System.out.println("登录失败");
+                        sendToBySession(session, BaseMessage.replay(message, "登录失败"));
                         break;
-                    case "clientlogin"://客户端登录
-
-                        break;
-                    case "replae":
-
+                    case "replay"://客户端回应
+                        clientMap.put(message.getClientName(), session);
 
                         break;
                     case "command":
+                        break;
+                    case "allclient":
+                        if (adminMap.containsKey(message.getClientName())) {
+                            //如果改管理员存在
+                            //TODO 校验token
+//                            System.out.println(clientMap);
+                            sendToBySession(session, BaseMessage.replay(message, clientMap.keySet()));
+                        }
+
+
+                        break;
 
 
                 }
@@ -120,6 +147,15 @@ public class WsClientManager {
                 //如何移除该条Session
 
             }
+        }
+    }
+
+
+    private static void sendToBySession(Session session, String msg) {
+        try {
+            session.getBasicRemote().sendText(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,16 +1,12 @@
 const JsonProtocol = {
-    _userId: "",
-    setUserId(userId) {
-        this._userId = userId;
-    },
     toObject(str) {
         //不判断是否是字符串了
         return JSON.parse(str);
     },
     toString(type, obj) {
         AMessage.type = type;
-        AMessage.clientName = this._userId;
-        AMessage.message = obj;
+        AMessage.clientName = obj.username;
+        AMessage.msg.password = obj.password;
         return JSON.stringify(AMessage);
     },
 };
@@ -19,7 +15,7 @@ const JsonProtocol = {
 const AMessage = {
     type: "",
     clientName: "",
-    message: {}
+    msg: {}
 };
 
 module.exports = JsonProtocol;

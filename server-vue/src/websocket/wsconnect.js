@@ -22,7 +22,7 @@ const websocket = {
 
     on_message: function (event) {
         if (this.onmessage) {
-            this.onmessage(event.data);
+            this.onmessage(JSON.parse(event.data));
         }
     },
 

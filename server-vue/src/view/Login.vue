@@ -111,7 +111,10 @@
                             }).then((res) => {
                                 console.log("goto home");
                                 if (res.data.code === "0000") {
-                                    this.$router.replace({path: "/home"});
+                                    this.$router.replace({path: "/home",query:{
+                                            username: this.loginName,
+                                            password: this.value
+                                        }});
                                 } else {
                                     this.reset()
                                 }

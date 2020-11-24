@@ -1,6 +1,7 @@
 package connect;
 
 import commend.Commend;
+import entities.SendMessage;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -40,7 +41,7 @@ public class WsClient extends WebSocketClient {
     }
 
     public static WsClient get() {
-        return get("ws://192.168.1.51:8080/chat");
+        return get("ws://127.0.0.1:8080/chat");
 //        return get("ws://123.207.136.134:9010/ajaxchattest");
     }
 
@@ -117,8 +118,7 @@ public class WsClient extends WebSocketClient {
     @Override
     public void send(String text) throws NotYetConnectedException {
         if (wsClient.getReadyState().equals(READYSTATE.OPEN)) {
-            String json = "{name:" + clientName + ",msg:" + text + "}";
-            super.send(json);
+            super.send(SendMessage.replay(clientName, "replay", text));
         }
     }
 

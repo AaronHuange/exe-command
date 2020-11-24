@@ -8,8 +8,5 @@
                 <action android:name="com.pk.mp.androidmodule.server.impl.WsService"/>
             </intent-filter>
         </service>
-
     </application>
-
-
 </manifest>
