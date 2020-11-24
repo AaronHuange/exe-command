@@ -7,7 +7,8 @@
                     {{tip}}
                 </div>
             </div>
-            <input ref="input" v-if="canShow" v-model="value" autofocus class="input input3" type="text"/>
+            <input id="input" ref="input" v-show="canShow" v-model="value" class="input input3"
+                   type="text"/>
         </div>
     </div>
 </template>
@@ -77,6 +78,10 @@
                         that.input();
                     } else {
                         this.canShow = true;
+                        this.$nextTick(() => {
+                            this.$refs.input.focus();
+                            // that.simulateClick(that.$refs.input);
+                        });
                     }
                 }, 100);
             },
@@ -103,13 +108,15 @@
                             LoginServer.login({
                                 "username": this.loginName,
                                 "password": this.value
-                            }).then((res, success) => {
-                                if (success) {
-                                    this.$router.replace({path:"/home"});
+                            }).then((res) => {
+                                console.log("goto home");
+                                if (res.data.code === "0000") {
+                                    this.$router.replace({path: "/home"});
                                 } else {
                                     this.reset()
                                 }
-                            }).catch(() => {
+                            }).catch((e) => {
+                                console.log("goto home error" + e);
                                 this.reset()
                             })
 
@@ -159,11 +166,13 @@
         width: max-content;
         height: 100%;
         border: none;
+        border: 0;
+        outline: none;
         font-size: 32px;
         padding-left: 30px;
         color: gray;
         background: transparent;
-        caret-color: red !important;
+        caret-color: #ff0992 !important;
     }
 
     .input2 {

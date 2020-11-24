@@ -1,11 +1,15 @@
-import router from "vue-router"
-import {Router} from "express";
+import Router from "vue-router";
 
 export default () => {
     return new Router({
-        mode: "hase",
+        mode: "hash",
         base: process.env.BASE_URL,
         routes: [
+            {
+                path:"/",
+                name:"App",
+
+            },
             {
                 path: "/auth",
                 name: "Auth",

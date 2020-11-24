@@ -76,7 +76,6 @@ public class MyWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                             }
                             out.write(new Gson().toJson(baseResponse));
                             out.flush();
-                            out.close();
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         } finally {

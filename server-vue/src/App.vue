@@ -1,17 +1,12 @@
 <template>
     <div id="app">
-        <Login class="login"/>
+        <router-view class="login"></router-view>
     </div>
 </template>
 
 <script>
-    import Login from "./view/Login";
-
     export default {
-        name: 'App',
-        components: {
-            Login
-        }
+        name: 'App'
     }
 </script>
 
@@ -29,7 +24,7 @@
         height: 100%;
     }
 
-    .login{
+    .login {
         width: 100%;
         height: 100%;
     }

@@ -15,12 +15,7 @@ import java.io.PrintWriter;
 public class LoginFailHandler implements AuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
             throws IOException, ServletException {
-
-        // JSON 信息
-//        Map<String, Object> map = new HashMap<String, Object>(3);
-
         BaseResponse baseResponse = new BaseResponse();
-//        map.put("code", 401);
         if (exception instanceof LockedException) {
             baseResponse.setReturn("9997");
         } else if (exception instanceof CredentialsExpiredException) {

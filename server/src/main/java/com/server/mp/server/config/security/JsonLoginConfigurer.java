@@ -59,7 +59,6 @@ public class JsonLoginConfigurer extends UsernamePasswordAuthenticationFilter {
             }
             String username = loginData.get(getUsernameParameter());
             String password = loginData.get(getPasswordParameter());
-
             // 创建 Authentication
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(username, password);
