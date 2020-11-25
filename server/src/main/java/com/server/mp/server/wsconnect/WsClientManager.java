@@ -85,6 +85,25 @@ public class WsClientManager {
         }
     }
 
+    public static void onError(Session session, Throwable throwable) {
+        synchronized (WsClientManager.class) {
+            for (Map.Entry<String, Session> s : adminMap.entrySet()) {
+                if (s.getValue() == session) {
+                    adminMap.remove(s.getKey());
+                    return;
+                }
+            }
+
+            for (Map.Entry<String, Session> s : clientMap.entrySet()) {
+                if (s.getValue() == session) {
+                    clientMap.remove(s.getKey());
+                    return;
+                }
+            }
+
+        }
+    }
+
     /**
      * 将消息发送给 '所有' 管理员
      *

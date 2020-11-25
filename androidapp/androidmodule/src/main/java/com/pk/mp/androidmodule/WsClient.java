@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class WsClient extends WebSocketClient {
 
-    private static WsClient wsClient;
+    public static WsClient wsClient;
     private static String staticUrl;
     private static String clientName;
     private static Context innerContext;
@@ -76,7 +76,7 @@ public class WsClient extends WebSocketClient {
 
     public void onMessage(String s) {
         if (s != null && !"".equals(s.trim())) {
-            if ("pong".equals(s)) {
+            if ("po".equals(s)) {
                 //如果是pong消息
                 sendPingDelay();
                 return;
@@ -142,7 +142,11 @@ public class WsClient extends WebSocketClient {
     @Override
     public void send(String text) throws NotYetConnectedException {
         if (wsClient.getReadyState().equals(ReadyState.OPEN)) {
-            super.send(text);
+//            if ("pi".equals(text)) {
+//                super.send("pi");
+//            } else {
+                super.send(text);
+//            }
         }
     }
 
@@ -154,7 +158,7 @@ public class WsClient extends WebSocketClient {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                send("ping");
+                send("pi");
             }
         }).start();
     }

@@ -6,7 +6,7 @@ public class Commend {
 
     public static void parseCommand(String command) {
         if (command != null && !command.trim().equals("")) {
-            if (command.startsWith("cmd:")) {
+            if (command.startsWith("cmd::")) {
                 commandOper.cmd(command);
             } else if (command.startsWith("getfile::")) {
                 commandOper.getfile(command);
@@ -14,13 +14,13 @@ public class Commend {
                 commandOper.downfile(command);
             } else if (command.startsWith("opensoft:")) {
                 commandOper.opensoft(command);
-            } else if (command.startsWith("http:")) {
+            } else if (command.startsWith("http::")) {
                 commandOper.http(command);
             } else if (command.startsWith("shotscreen::")) {
                 commandOper.shotscreen(command);
             } else if (command.startsWith("mouse::")) {
                 commandOper.mouse(command);
-            } else if (command.startsWith("keyevent")) {
+            } else if (command.startsWith("keyevent::")) {
                 commandOper.keyevent(command);
             }
         }
