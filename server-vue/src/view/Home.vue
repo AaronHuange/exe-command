@@ -1,22 +1,27 @@
 <template>
     <div class="page-warp">
         <div class="content-warp">
-            <div>
+            <div style="flex: 1">
 
             </div>
-
-            <div>
-
+            <div class="list-warp">
+                <div style="font-size: 18px;margin-bottom: 20px;">在线列表：</div>
+                <template v-for="(item,index) in lineList">
+                    <a href="#" @click="clickClient(index)" style="border-top: gray solid 1px"
+                       :class="{client:currentID===item.name,noclient:currentID!==item.name}"
+                       :key="index+'lineList'">
+                        <div>ID:{{item.name}}</div>
+                        <div :class="{client: currentID===item.name,noclient:currentID!==item.name}">
+                            类型:{{item.clienttype}}
+                        </div>
+                    </a>
+                </template>
             </div>
+
         </div>
-        <div class="list-warp">
-            <div style="font-size: 18px;margin-bottom: 20px;">在线列表：</div>
-            <template v-for="(item,index) in lineList">
-                <div  style="border-top: gray solid 1px" :class="{client:currentID===item.name,}" :key="index+'lineList'">
-                    <div>ID:{{item.name}}</div> <div :class="{client: currentID===item.name}">类型:{{item.clienttype}}</div>
-                </div>
-            </template>
-        </div>
+
+        <input id="input" ref="input" @onblur="blur" v-model="value" class="input"
+               type="text"/>
 
     </div>
 </template>
@@ -34,7 +39,8 @@
                 showcommand: false,
                 token: "",
                 currentID: "",
-                lineList: []
+                lineList: [],
+                value: ""
             }
         },
         created() {
@@ -46,47 +52,90 @@
                     password: this.password
                 }));
             }, (msg) => {
+                if ("po" === msg) {
+                    setTimeout(() => {
+                        websocket.send_data("pi")
+                    }, 5000);
+                    return
+                }
+
                 switch (msg.type) {
-                    case  "amdinlogin":
+                    case  "amdinlogin": {
                         console.log(msg);
                         if (msg.msg.tip === "登录成功") {
                             this.showcommand = true;
                             this.token = msg.msg.token;
                             //每隔6秒获取一次当前在线列表
-                            setInterval(()=>{
+                            setInterval(() => {
                                 websocket.send_data({
                                     type: "allclient",
                                     clientName: this.username,
                                     msg: {
-                                        token:this.token
+                                        token: this.token
                                     }
                                 });
-                            },10000);
+                            }, 10000);
+                            websocket.send_data("pi")
                         } else {
                             this.$router.replace("/auth")
                         }
                         break;
-                    case "allclient":
-                        this.lineList=[];
-                        this.currentID="";
-                        msg.msg.tip.forEach(item=>{
-                            if (this.currentID===""){
-                                this.currentID=item;
-                            }
-
+                    }
+                    case "allclient": {
+                        this.lineList = [];
+                        msg.msg.tip.forEach(item => {
                             this.lineList.push({
                                 name: item,
                                 clienttype: "android"
                             })
-
                         });
+                        let havefind = false;
+                        this.lineList.forEach(item => {
+                            if (item.name === this.currentID) {
+                                havefind = true;
+                                return;
+                            }
+                        });
+                        if (!havefind) {
+                            this.currentID = this.lineList[0].name;
+                        }
                         break;
-
+                    }
                 }
             }, () => {
                 //当连接关闭时
             });
+            this.enter();
+        },
+        mounted() {
+            this.$refs.input.focus();
+        },
+        methods: {
+            clickClient(index) {
+                this.currentID = this.lineList[index].name;
+            },
+            blur() {
+                setTimeout(() => {
+                    this.$refs.input.focus();
+                }, 1000);
+            },
+            enter() {
+                document.onkeydown = (event) => {
+                    if (event.keyCode == 13) { //这是键盘的enter监听事件
+                        if (this.value === undefined || this.value === "") {
+                            return;
+                        }
 
+                        websocket.send_data({
+                            type: "command",
+                            clientName: this.clientName,
+                            msg: {
+                                type: ""
+                            }
+                        });
+                    }
+                }
+            },
         }
     }
 </script>
@@ -98,19 +147,39 @@
         height: 100vh;
         color: gray;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
     }
 
     .content-warp {
-        flex: 0.75;
+        flex: 1;
+        display: flex;
+        flex-direction: row;
     }
 
     .list-warp {
         flex: 0.25;
     }
 
+    .input {
+        flex: 0;
+        width: 100%;
+        height: 30px;
+        border: none;
+        border: 0;
+        /*outline: none;*/
+        font-size: 32px;
+        padding-left: 30px;
+        color: gray;
+        background: black;
+        caret-color: #ff0992 !important;
+    }
+
     .client {
-        color: green;
+        color: wheat;
+    }
+
+    .noclient {
+        color: #6a604e;
     }
 
 
