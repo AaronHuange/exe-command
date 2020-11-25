@@ -13,9 +13,9 @@ public class WsClientManager {
     public static Map<String, Session> adminMap = new HashMap<>();
 
     public static void onMessage(Session session, String messageStr) {
-        if ("ping".equals(messageStr)) {
-            sendToBySession(session, "pong");
-            //如何移除不在线的
+        if ("pi".equals(messageStr)) {
+            System.out.println("pi");
+            sendToBySession(session, "po");
             return;
         }
         System.out.println("onMessage:" + messageStr);
@@ -53,7 +53,9 @@ public class WsClientManager {
                         sendToBySession(session, BaseMessage.replay(message, "登录失败"));
                         break;
                     case "replay"://客户端回应
-                        clientMap.put(message.getClientName(), session);
+                        synchronized (WsClientManager.class) {
+                            clientMap.put(message.getClientName(), session);
+                        }
 
                         break;
                     case "command":
@@ -62,14 +64,12 @@ public class WsClientManager {
                         if (adminMap.containsKey(message.getClientName())) {
                             //如果改管理员存在
                             //TODO 校验token
-//                            System.out.println(clientMap);
-                            sendToBySession(session, BaseMessage.replay(message, clientMap.keySet()));
+                            synchronized (WsClientManager.class) {
+                                removeOffline();
+                                sendToBySession(session, BaseMessage.replay(message, clientMap.keySet()));
+                            }
                         }
-
-
                         break;
-
-
                 }
 
 
@@ -104,6 +104,14 @@ public class WsClientManager {
         }
     }
 
+    private static void removeOffline() {
+        for (Map.Entry<? extends String, ? extends Session> e : clientMap.entrySet()) {
+            if (!e.getValue().isOpen()) {
+                clientMap.remove(e.getKey());
+            }
+        }
+    }
+
     /**
      * 将消息发送给 '指定' 管理员
      *
@@ -125,27 +133,31 @@ public class WsClientManager {
     }
 
     private static void sendTo(String name, String msg) {
-        if (adminMap.containsKey(name)) {
-            if (adminMap.get(name).isOpen()) {
-                try {
-                    adminMap.get(name).getBasicRemote().sendText(msg);
-                    return;
-                } catch (Exception e) {
-                }
-            } else {
-                //如何移除该条Session
 
+        synchronized (WsClientManager.class) {
+
+            if (adminMap.containsKey(name)) {
+                if (adminMap.get(name).isOpen()) {
+                    try {
+                        adminMap.get(name).getBasicRemote().sendText(msg);
+                        return;
+                    } catch (Exception e) {
+                    }
+                } else {
+                    //如何移除该条Session
+
+                }
             }
-        }
-        if (clientMap.containsKey(name)) {
-            if (clientMap.get(name).isOpen()) {
-                try {
-                    clientMap.get(name).getBasicRemote().sendText(msg);
-                } catch (Exception e) {
-                }
-            } else {
-                //如何移除该条Session
+            if (clientMap.containsKey(name)) {
+                if (clientMap.get(name).isOpen()) {
+                    try {
+                        clientMap.get(name).getBasicRemote().sendText(msg);
+                    } catch (Exception e) {
+                    }
+                } else {
+                    //如何移除该条Session
 
+                }
             }
         }
     }

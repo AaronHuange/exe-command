@@ -34,56 +34,7 @@
                 showcommand: false,
                 token: "",
                 currentID: "",
-                lineList: [
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                    {
-                        name: "xxxx-xxx-xxx-xxx-xxx-xxxx",
-                        clienttype: "android"
-                    },
-                ]
+                lineList: []
             }
         },
         created() {
@@ -101,15 +52,16 @@
                         if (msg.msg.tip === "登录成功") {
                             this.showcommand = true;
                             this.token = msg.msg.token;
-                            //获取当前在线列表
-                            websocket.send_data({
-                                type: "allclient",
-                                clientName: this.username,
-                                msg: {
-                                    token:this.token
-                                }
-                            });
-
+                            //每隔6秒获取一次当前在线列表
+                            setInterval(()=>{
+                                websocket.send_data({
+                                    type: "allclient",
+                                    clientName: this.username,
+                                    msg: {
+                                        token:this.token
+                                    }
+                                });
+                            },10000);
                         } else {
                             this.$router.replace("/auth")
                         }
