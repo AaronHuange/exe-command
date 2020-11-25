@@ -1,9 +1,12 @@
 <template>
     <div class="page-warp">
         <div class="content-warp">
-            <div style="flex: 1">
-
+            <div  class="textarea-warp">
+                <div style="flex: 1"></div>
+                <div ref="chatContent" class="textarea" v-html="textValue">
+                </div>
             </div>
+
             <div class="list-warp">
                 <div style="font-size: 18px;margin-bottom: 20px;">在线列表：</div>
                 <template v-for="(item,index) in lineList">
@@ -38,9 +41,17 @@
                 password: this.$route.query.password,
                 showcommand: false,
                 token: "",
+                textValue: "",
                 currentID: "",
                 lineList: [],
                 value: ""
+            }
+        },
+        watch:{
+            textValue(){
+                this.$nextTick(() =>{
+                    this.$refs.chatContent.scrollTop = this.$refs.chatContent.scrollHeight;
+                })
             }
         },
         created() {
@@ -125,7 +136,6 @@
                         if (this.value === undefined || this.value === "") {
                             return;
                         }
-
                         websocket.send_data({
                             type: "command",
                             name: this.clientName,
@@ -133,15 +143,18 @@
                                 sendToList: [
                                     this.currentID
                                 ],
-                                sendCommand:{
-                                    name:this.clientName,
-                                    type:"open",
-                                    msg:{
-                                        packagename:"com.alibaba.android.rimet"
+                                sendCommand: {
+                                    name: this.clientName,
+                                    type: "open",
+                                    msg: {
+                                        packagename: "com.alibaba.android.rimet"
                                     }
                                 }
                             }
                         });
+
+                        this.textValue = this.textValue + this.value + "<br/>";
+                        this.value = "";
                     }
                 }
             },
@@ -165,13 +178,37 @@
         flex-direction: row;
     }
 
+    .textarea-warp {
+        flex: 0.75;
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        height: 90vh;
+    }
+
+    .textarea {
+        background: transparent;
+        color: gray;
+        padding-left: 30px;
+        padding-bottom: 0px;
+        padding-top: 50px;
+        word-wrap: break-word;
+        font-size: 13px;
+        word-break: break-all;
+        overflow: scroll; /*这个参数根据需要来绝对要不要*/
+        -webkit-overflow-scrolling: touch;
+        overflow-scrolling: touch;
+        overflow: scroll;
+    }
+
     .list-warp {
         flex: 0.25;
     }
 
     .input {
         flex: 0;
-        width: 100%;
+        min-width: 95%;
+        max-width: 95%;
         height: 30px;
         border: none;
         border: 0;
