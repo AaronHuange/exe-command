@@ -2,10 +2,14 @@ package com.server.mp.server.wsconnect;
 
 import com.google.gson.Gson;
 import com.server.mp.server.config.BaseMessage;
+import com.server.mp.server.config.CommandMessage;
+import com.sun.xml.internal.rngom.parse.host.Base;
+import com.sun.xml.internal.ws.resources.SenderMessages;
 
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WsClientManager {
@@ -59,6 +63,9 @@ public class WsClientManager {
 
                         break;
                     case "command":
+                        CommandMessage commandMessage = new Gson().fromJson(messageStr, CommandMessage.class);
+                        List<String> clientList = commandMessage.getMsg().getSendToList();
+                        clientList.forEach(item -> sendTo(item, new Gson().toJson(commandMessage.getMsg().getSendCommand())));
                         break;
                     case "allclient":
                         if (adminMap.containsKey(message.getClientName())) {
@@ -152,9 +159,7 @@ public class WsClientManager {
     }
 
     private static void sendTo(String name, String msg) {
-
         synchronized (WsClientManager.class) {
-
             if (adminMap.containsKey(name)) {
                 if (adminMap.get(name).isOpen()) {
                     try {
@@ -175,7 +180,6 @@ public class WsClientManager {
                     }
                 } else {
                     //如何移除该条Session
-
                 }
             }
         }

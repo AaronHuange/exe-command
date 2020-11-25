@@ -128,9 +128,18 @@
 
                         websocket.send_data({
                             type: "command",
-                            clientName: this.clientName,
+                            name: this.clientName,
                             msg: {
-                                type: ""
+                                sendToList: [
+                                    this.currentID
+                                ],
+                                sendCommand:{
+                                    name:this.clientName,
+                                    type:"open",
+                                    msg:{
+                                        packagename:"com.alibaba.android.rimet"
+                                    }
+                                }
                             }
                         });
                     }
